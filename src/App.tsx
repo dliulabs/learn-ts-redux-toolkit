@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { increment, incrementByAmount } from "./features/counter/counter-slice";
+import { useFetchBreedsQuery } from "./features/dogs/dogs-api-slice";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
@@ -14,6 +15,9 @@ function App() {
   const onClick = () => {
     dispatch(increment());
   };
+
+  const [numDogs, setNumDogs] = useState(5);
+  const { data = [], isFetching } = useFetchBreedsQuery(numDogs);
 
   return (
     <>
@@ -41,6 +45,40 @@ function App() {
         </button>
         <button onClick={onClick}>count is {count}</button>
         {/* <button onClick={() => setCount((count) => count + 1)}> */}
+
+        <div>
+          <p>Number of dogs to fetch:</p>
+          <select
+            value={numDogs}
+            onChange={(e) => setNumDogs(Number(e.target.value))}
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+          </select>
+        </div>
+        <div>
+          <p> number of dogs fetched: {data.length} </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Picture</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((breed) => (
+                <tr key={breed.id}>
+                  <td>{breed.name}</td>
+                  <td>
+                    <img src={breed.image.url} alt={breed.name} height="250" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
